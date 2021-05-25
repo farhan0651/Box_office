@@ -1,11 +1,10 @@
 /* eslint-disable arrow-body-style */
 import React from 'react'
+import MainPage from '../components/MainPage'
 
 const Starred = () => {
     return (
-        <div>
-            This is Starred Page
-        </div>
+        <MainPage>This is Starred Page</MainPage>
     )
 }
 
