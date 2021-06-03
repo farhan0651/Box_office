@@ -1,6 +1,6 @@
 /* eslint-disable arrow-body-style */
 // eslint-disable-next-line
-import React,{useState} from 'react'
+import React,{useState,useCallback} from 'react'
 import ActorGrid from '../components/actors/ActorGrid';
 import CustomRadios from '../components/CustomRadios';
 import MainPage from '../components/MainPage'
@@ -9,6 +9,21 @@ import {apiGET} from '../misc/Config'
 import {useLastQuery} from '../misc/custom-hooks'
 import {SearchInput,SearchButtonWrapper,RadioInputsWrapper}from './Home.styled'
 
+const renderResults=(results)=>{
+    if(results && results.length===0){
+       return <div>No results</div>;
+    }
+    if(results && results.length>0){
+        return results[0].show ?
+            // results.map(resultsContent => (
+            //      <div key={resultsContent.show.id}>{resultsContent.show.name}</div>
+            // ))
+            <ShowGrid data={results} />
+            :  <ActorGrid data={results} />
+    }
+    return null;
+};
+
 const Home = () => {
     const [input,setInput]=useLastQuery();
     const [results,setResults]=useState(null);
@@ -16,9 +31,9 @@ const Home = () => {
     const isShowSearch=searchOption==='shows';
 
 
-    const onInputChange=(eventObject)=>{
+    const onInputChange=useCallback((eventObject)=>{
         setInput(eventObject.target.value);
-    }
+    },[setInput])
     const onSearch=()=>{
         apiGET(`/search/${searchOption}?q=${input}`).then(result=>{
             setResults(result);
@@ -30,24 +45,9 @@ const Home = () => {
             onSearch();
     }
 
-    const renderResults=()=>{
-        if(results && results.length===0){
-           return <div>No results</div>;
-        }
-        if(results && results.length>0){
-            return results[0].show ?
-                // results.map(resultsContent => (
-                //      <div key={resultsContent.show.id}>{resultsContent.show.name}</div>
-                // ))
-                <ShowGrid data={results} />
-                :  <ActorGrid data={results} />
-        }
-        return null;
-    };
-
-    const onRadioChange=(eventObject)=>{
-       setSearchOption(eventObject.target.value); 
-    }
+    const onRadioChange=useCallback((eventObject)=>{
+        setSearchOption(eventObject.target.value); 
+     },[])
 
     return (
         <MainPage>
@@ -73,7 +73,7 @@ const Home = () => {
             <SearchButtonWrapper>
             <button type='button' onClick={onSearch}>Search</button>
             </SearchButtonWrapper>
-            {renderResults()}
+            {renderResults(results)}
         </MainPage>
     )
 }
