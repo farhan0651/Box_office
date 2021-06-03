@@ -31,9 +31,10 @@ const Home = () => {
     const isShowSearch=searchOption==='shows';
 
 
-    const onInputChange=useCallback((eventObject)=>{
+    const onInputChange=(eventObject)=>{
         setInput(eventObject.target.value);
-    },[setInput])
+    }
+
     const onSearch=()=>{
         apiGET(`/search/${searchOption}?q=${input}`).then(result=>{
             setResults(result);
